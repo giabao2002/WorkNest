@@ -5,10 +5,6 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-tasks me-2"></i>
-                        <span class="fw-bold">WorkNest</span>
-                    </div>
                     <p class="small mt-2">Hệ thống quản lý công việc toàn diện cho doanh nghiệp</p>
                 </div>
                 <div class="col-md-6 text-md-end">

@@ -276,18 +276,22 @@ include_once '../../templates/header.php';
                                     
                                     while ($department = fetch_array($department_result)):
                                     ?>
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" class="custom-control-input" 
+                                        <div class="form-check mb-2">
+                                            <input type="checkbox" class="form-check-input" 
                                                    id="dept-<?php echo $department['id']; ?>" 
                                                    name="departments[]" 
                                                    value="<?php echo $department['id']; ?>" 
                                                    <?php echo in_array($department['id'], $selected_departments) ? 'checked' : ''; ?>>
-                                            <label class="custom-control-label" for="dept-<?php echo $department['id']; ?>">
+                                            <label class="form-check-label" for="dept-<?php echo $department['id']; ?>">
                                                 <?php echo $department['name']; ?>
                                             </label>
                                         </div>
                                     <?php endwhile; ?>
                                 </div>
+                            </div>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllDepts">Chọn tất cả</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="deselectAllDepts">Bỏ chọn tất cả</button>
                             </div>
                         </div>
                     </div>
@@ -311,4 +315,20 @@ include_once '../../templates/header.php';
 <?php
 // Include footer
 include_once '../../templates/footer.php';
+?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select/Deselect all departments
+    document.getElementById('selectAllDepts').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[name="departments[]"]');
+        checkboxes.forEach(checkbox => checkbox.checked = true);
+    });
+    
+    document.getElementById('deselectAllDepts').addEventListener('click', function() {
+        const checkboxes = document.querySelectorAll('input[name="departments[]"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+    });
+});
+</script>
 ?> 

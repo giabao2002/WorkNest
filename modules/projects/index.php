@@ -125,7 +125,7 @@ include_once '../../templates/header.php';
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="input-group">
-                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm dự án..." value="<?php echo $search; ?>">
+                            <input type="text" class="form-control" name="search" placeholder="Tìm kiếm theo tên dự án..." value="<?php echo $search; ?>">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fas fa-search fa-sm"></i>

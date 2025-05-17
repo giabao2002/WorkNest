@@ -155,4 +155,89 @@ function breadcrumb($items) {
     $html .= '</ol></nav>';
     
     return $html;
+}
+
+// Hàm định dạng thời gian
+function format_datetime($datetime, $format = 'd/m/Y H:i') {
+    $date = new DateTime($datetime);
+    
+    $now = new DateTime();
+    $diff = $now->diff($date);
+    
+    // Nếu thời gian trong ngày hôm nay
+    if ($diff->days == 0) {
+        if ($diff->h == 0 && $diff->i < 5) {
+            return 'Vừa xong';
+        } elseif ($diff->h == 0) {
+            return $diff->i . ' phút trước';
+        } else {
+            return $diff->h . ' giờ trước';
+        }
+    } 
+    // Nếu thời gian trong ngày hôm qua
+    elseif ($diff->days == 1) {
+        return 'Hôm qua lúc ' . $date->format('H:i');
+    } 
+    // Nếu thời gian trong tuần này
+    elseif ($diff->days < 7) {
+        return $diff->days . ' ngày trước';
+    } 
+    // Các trường hợp khác
+    else {
+        return $date->format($format);
+    }
+}
+
+// Hàm đếm số thông báo chưa đọc
+function count_unread_notifications($user_id) {
+    $user_id = (int)$user_id;
+    $sql = "SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = 0";
+    $result = query($sql);
+    $data = fetch_array($result);
+    
+    return $data['count'];
+}
+
+// Hàm lấy danh sách thông báo
+function get_notifications($user_id, $limit = 10, $offset = 0) {
+    $user_id = (int)$user_id;
+    $limit = (int)$limit;
+    $offset = (int)$offset;
+    
+    $sql = "SELECT * FROM notifications 
+            WHERE user_id = $user_id 
+            ORDER BY created_at DESC 
+            LIMIT $offset, $limit";
+    
+    $result = query($sql);
+    $notifications = [];
+    
+    while ($row = fetch_array($result)) {
+        $notifications[] = $row;
+    }
+    
+    return $notifications;
+}
+
+// Hàm đánh dấu thông báo đã đọc
+function mark_notification_as_read($notification_id, $user_id) {
+    $notification_id = (int)$notification_id;
+    $user_id = (int)$user_id;
+    
+    $sql = "UPDATE notifications 
+            SET is_read = 1 
+            WHERE id = $notification_id AND user_id = $user_id";
+    
+    return query($sql);
+}
+
+// Hàm đánh dấu tất cả thông báo đã đọc
+function mark_all_notifications_as_read($user_id) {
+    $user_id = (int)$user_id;
+    
+    $sql = "UPDATE notifications 
+            SET is_read = 1 
+            WHERE user_id = $user_id AND is_read = 0";
+    
+    return query($sql);
 } 

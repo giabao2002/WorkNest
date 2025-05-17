@@ -14,6 +14,11 @@ if (!has_permission('admin') && !has_permission('project_manager')) {
     redirect('dashboard.php');
 }
 
+// Phân trang
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
 // Xử lý xóa người dùng
 if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
     $user_id = (int)$_GET['id'];
@@ -68,29 +73,34 @@ $filter_role = isset($_GET['role']) ? escape_string($_GET['role']) : '';
 $filter_department = isset($_GET['department']) ? (int)$_GET['department'] : 0;
 
 // Xây dựng câu truy vấn
-$sql = "SELECT u.*, d.name as department_name 
-        FROM users u 
+$base_sql = "FROM users u 
         LEFT JOIN departments d ON u.department_id = d.id
         WHERE 1=1";
 
 // Thêm điều kiện tìm kiếm nếu có
 if (!empty($search)) {
-    $sql .= " AND (u.name LIKE '%$search%' OR u.email LIKE '%$search%')";
+    $base_sql .= " AND (u.name LIKE '%$search%' OR u.email LIKE '%$search%')";
 }
 
 // Thêm điều kiện lọc theo vai trò
 if (!empty($filter_role)) {
-    $sql .= " AND u.role = '$filter_role'";
+    $base_sql .= " AND u.role = '$filter_role'";
 }
 
 // Thêm điều kiện lọc theo phòng ban
 if ($filter_department > 0) {
-    $sql .= " AND u.department_id = $filter_department";
+    $base_sql .= " AND u.department_id = $filter_department";
 }
 
-// Sắp xếp kết quả
-$sql .= " ORDER BY u.id ASC";
+// Đếm tổng số người dùng theo điều kiện
+$count_sql = "SELECT COUNT(*) as total " . $base_sql;
+$count_result = query($count_sql);
+$count_row = fetch_array($count_result);
+$total = $count_row['total'];
+$total_pages = ceil($total / $limit);
 
+// Lấy danh sách người dùng có phân trang
+$sql = "SELECT u.*, d.name as department_name " . $base_sql . " ORDER BY u.id ASC LIMIT $offset, $limit";
 $result = query($sql);
 
 // Lấy danh sách phòng ban cho bộ lọc
@@ -240,6 +250,37 @@ while ($department = fetch_array($departments_result)) {
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Phân trang -->
+            <?php if ($total_pages > 1): ?>
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?php echo $page-1; ?><?php echo !empty($search) ? '&search='.$search : ''; ?><?php echo !empty($filter_role) ? '&role='.$filter_role : ''; ?><?php echo $filter_department > 0 ? '&department='.$filter_department : ''; ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                        
+                        <?php for($i = 1; $i <= $total_pages; $i++): ?>
+                            <li class="page-item <?php echo $page == $i ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo $i; ?><?php echo !empty($search) ? '&search='.$search : ''; ?><?php echo !empty($filter_role) ? '&role='.$filter_role : ''; ?><?php echo $filter_department > 0 ? '&department='.$filter_department : ''; ?>">
+                                    <?php echo $i; ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+                        
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<?php echo $page+1; ?><?php echo !empty($search) ? '&search='.$search : ''; ?><?php echo !empty($filter_role) ? '&role='.$filter_role : ''; ?><?php echo $filter_department > 0 ? '&department='.$filter_department : ''; ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            <?php endif; ?>
         </div>
     </div>
 </div>

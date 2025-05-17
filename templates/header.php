@@ -1,3 +1,7 @@
+<?php
+// Include functions.php
+require_once __DIR__ . '/../includes/functions.php';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -24,7 +28,6 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
             <div class="container-fluid">
                 <a class="navbar-brand d-flex align-items-center" href="<?php echo BASE_URL; ?>">
-                    <i class="fas fa-tasks me-2"></i>
                     <span class="fw-bold">WorkNest</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -84,14 +87,12 @@
                                 <?php
                                 // Đếm số thông báo chưa đọc
                                 $user_id = $_SESSION['user_id'];
-                                $unread_count_sql = "SELECT COUNT(*) as count FROM notifications WHERE user_id = $user_id AND is_read = 0";
-                                $unread_result = query($unread_count_sql);
-                                $unread_data = fetch_array($unread_result);
+                                $unread_count = count_unread_notifications($user_id);
 
-                                if ($unread_data['count'] > 0):
+                                if ($unread_count > 0):
                                 ?>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        <?php echo $unread_data['count']; ?>
+                                        <?php echo $unread_count; ?>
                                     </span>
                                 <?php endif; ?>
                             </a>
@@ -100,23 +101,27 @@
                                 <div class="notifications-container">
                                     <?php
                                     // Lấy danh sách thông báo gần nhất
-                                    $notifications_sql = "SELECT * FROM notifications WHERE user_id = $user_id ORDER BY created_at DESC LIMIT 5";
-                                    $notifications_result = query($notifications_sql);
+                                    $notifications = get_notifications($user_id, 5);
 
-                                    if (num_rows($notifications_result) > 0) {
-                                        while ($notification = fetch_array($notifications_result)) {
+                                    if (!empty($notifications)) {
+                                        foreach ($notifications as $notification) {
                                             $is_read_class = $notification['is_read'] ? 'text-muted' : 'fw-bold';
                                             echo '<a class="dropdown-item ' . $is_read_class . '" href="' . BASE_URL . 'modules/notifications/mark_read.php?id=' . $notification['id'] . '&redirect=' . urlencode($notification['link']) . '">';
-                                            echo '<small class="text-muted">' . format_datetime($notification['created_at']) . '</small><br>';
+                                            if (!$notification['is_read']) {
+                                                echo '<span class="notification-circle"></span>';
+                                            }
+                                            echo '<div>';
                                             echo $notification['message'];
+                                            echo '<div class="notification-timestamp">' . format_datetime($notification['created_at']) . '</div>';
+                                            echo '</div>';
                                             echo '</a>';
-                                            echo '<div class="dropdown-divider"></div>';
                                         }
                                     } else {
                                         echo '<div class="dropdown-item">Không có thông báo mới</div>';
                                     }
                                     ?>
                                 </div>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-center text-primary" href="<?php echo BASE_URL; ?>modules/notifications/">
                                     Xem tất cả
                                 </a>
@@ -141,7 +146,7 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li>
                                     <a class="dropdown-item" href="<?php echo BASE_URL; ?>modules/users/profile.php">
-                                        <i class="fas fa-user me-1"></i> Hồ sơ cá nhân
+                                        <i class="fas fa-user me-1"></i> Thông tin cá nhân
                                     </a>
                                 </li>
                                 <li>

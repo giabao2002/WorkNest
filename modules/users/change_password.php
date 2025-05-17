@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Trang đổi mật khẩu
  */
 
 // Include config
 require_once '../../config/config.php';
+require_once '../../includes/functions.php';
 
 // Kiểm tra đăng nhập
 if (!is_logged_in()) {
@@ -28,17 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $current_password = $_POST['current_password'] ?? '';
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
-    
+
     // Kiểm tra dữ liệu
     $errors = [];
-    
+
     // Kiểm tra mật khẩu hiện tại
     if (empty($current_password)) {
         $errors[] = 'Vui lòng nhập mật khẩu hiện tại';
     } elseif (!verify_password($current_password, $user['password'])) {
         $errors[] = 'Mật khẩu hiện tại không đúng';
     }
-    
+
     // Kiểm tra mật khẩu mới
     if (empty($new_password)) {
         $errors[] = 'Vui lòng nhập mật khẩu mới';
@@ -47,19 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($new_password === $current_password) {
         $errors[] = 'Mật khẩu mới không được trùng với mật khẩu hiện tại';
     }
-    
+
     // Kiểm tra xác nhận mật khẩu
     if (empty($confirm_password)) {
         $errors[] = 'Vui lòng xác nhận mật khẩu mới';
     } elseif ($confirm_password !== $new_password) {
         $errors[] = 'Xác nhận mật khẩu không khớp với mật khẩu mới';
     }
-    
+
     // Cập nhật mật khẩu nếu không có lỗi
     if (empty($errors)) {
         $hashed_password = hash_password($new_password);
         $update_sql = "UPDATE users SET password = '$hashed_password', updated_at = NOW() WHERE id = $user_id";
-        
+
         if (query($update_sql)) {
             set_flash_message('Đổi mật khẩu thành công');
             redirect('modules/users/profile.php');
@@ -84,15 +86,13 @@ include_once '../../templates/header.php';
         </a>
     </div>
 
-    <?php 
+    <?php
     // Hiển thị thông báo
     $flash_message = get_flash_message();
     if (!empty($flash_message)) {
         echo '<div class="alert alert-' . $flash_message['type'] . ' alert-dismissible fade show" role="alert">
             ' . $flash_message['message'] . '
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>';
     }
 
@@ -104,9 +104,7 @@ include_once '../../templates/header.php';
             echo '<li>' . $error . '</li>';
         }
         echo '</ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>';
     }
     ?>
@@ -119,55 +117,49 @@ include_once '../../templates/header.php';
                 </div>
                 <div class="card-body">
                     <form action="" method="post" id="changePasswordForm">
-                        <div class="form-group">
-                            <label for="current_password">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                        <div class="form-group mb-3">
+                            <label for="current_password" class="form-label">Mật khẩu hiện tại <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="password" class="form-control" id="current_password" name="current_password" required>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary password-toggle" type="button" data-target="#current_password">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-field="current_password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="new_password">Mật khẩu mới <span class="text-danger">*</span></label>
+
+                        <div class="form-group mb-3">
+                            <label for="new_password" class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="password" class="form-control" id="new_password" name="new_password" required>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary password-toggle" type="button" data-target="#new_password">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-field="new_password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
                             <small class="form-text text-muted">Mật khẩu phải có ít nhất 6 ký tự</small>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="confirm_password">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+
+                        <div class="form-group mb-3">
+                            <label for="confirm_password" class="form-label">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary password-toggle" type="button" data-target="#confirm_password">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
+                                <button class="btn btn-outline-secondary toggle-password" type="button" data-field="confirm_password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
                             </div>
                         </div>
-                        
+
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-key"></i> Đổi mật khẩu
                             </button>
-                            <a href="profile.php" class="btn btn-secondary ml-2">
+                            <a href="profile.php" class="btn btn-secondary ms-2">
                                 <i class="fas fa-times"></i> Hủy
                             </a>
                         </div>
                     </form>
                 </div>
             </div>
-            
+
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> Sau khi đổi mật khẩu thành công, bạn nên đăng nhập lại với mật khẩu mới.
             </div>
@@ -176,24 +168,29 @@ include_once '../../templates/header.php';
 </div>
 
 <script>
-$(document).ready(function() {
-    // Hiện/ẩn mật khẩu
-    $('.password-toggle').on('click', function() {
-        var input = $($(this).data('target'));
-        var icon = $(this).find('i');
-        
-        if (input.attr('type') === 'password') {
-            input.attr('type', 'text');
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        } else {
-            input.attr('type', 'password');
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý hiện/ẩn mật khẩu
+        document.querySelectorAll('.toggle-password').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const fieldId = this.getAttribute('data-field');
+                const passwordField = document.getElementById(fieldId);
+                const icon = this.querySelector('i');
+
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordField.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
     });
-});
 </script>
 
 <?php
 // Include footer
 include_once '../../templates/footer.php';
-?> 
+?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Trang hồ sơ cá nhân
+ * Trang Thông tin cá nhân
  */
 
 // Include config
@@ -126,7 +126,7 @@ if ($user['department_id']) {
 }
 
 // Tiêu đề trang
-$page_title = "Hồ sơ cá nhân";
+$page_title = "Thông tin cá nhân";
 
 // Include header
 include_once '../../templates/header.php';
@@ -134,7 +134,7 @@ include_once '../../templates/header.php';
 
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Hồ sơ cá nhân</h1>
+        <h1 class="h3 mb-0 text-gray-800">Thông tin cá nhân</h1>
     </div>
 
     <?php 

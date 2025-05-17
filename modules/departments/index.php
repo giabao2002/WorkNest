@@ -20,11 +20,11 @@ $offset = ($page - 1) * $limit;
 $search = isset($_GET['search']) ? escape_string($_GET['search']) : '';
 $search_condition = '';
 if (!empty($search)) {
-    $search_condition = " WHERE name LIKE '%$search%' OR description LIKE '%$search%'";
+    $search_condition = " WHERE d.name LIKE '%$search%' OR d.description LIKE '%$search%'";
 }
 
 // Lấy tổng số phòng ban
-$total_query = query("SELECT COUNT(*) as total FROM departments$search_condition");
+$total_query = query("SELECT COUNT(*) as total FROM departments as d$search_condition");
 $total_row = fetch_array($total_query);
 $total = $total_row['total'];
 $total_pages = ceil($total / $limit);
@@ -66,7 +66,7 @@ include_once '../../templates/header.php';
                 <div class="col-md-6">
                     <form action="" method="GET" class="float-right">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control small" placeholder="Tìm kiếm..." value="<?php echo $search; ?>">
+                            <input type="text" name="search" class="form-control small" placeholder="Tìm kiếm theo tên phòng ban và mô tả" value="<?php echo $search; ?>">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fas fa-search fa-sm"></i>

@@ -60,10 +60,5 @@ function format_date($date) {
     return date('d/m/Y', strtotime($date));
 }
 
-// Hàm định dạng ngày giờ
-function format_datetime($datetime) {
-    return date('d/m/Y H:i', strtotime($datetime));
-}
-
 // Include thư viện database
 require_once ROOT_PATH . 'config/database.php'; 

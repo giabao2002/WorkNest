@@ -80,10 +80,6 @@ include_once '../../templates/header.php';
                 <div class="card-body">
                     <table class="table table-bordered">
                         <tr>
-                            <th width="30%">ID</th>
-                            <td><?php echo $department['id']; ?></td>
-                        </tr>
-                        <tr>
                             <th>Tên phòng ban</th>
                             <td><?php echo $department['name']; ?></td>
                         </tr>
@@ -121,14 +117,14 @@ include_once '../../templates/header.php';
         <!-- Thống kê nhanh -->
         <div class="col-lg-6">
             <div class="row">
-                <!-- Số lượng nhân viên -->
+                <!-- Số lượng thành viên -->
                 <div class="col-md-6 mb-4">
                     <div class="card border-left-primary shadow h-100 py-2">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        Số lượng nhân viên</div>
+                                        Số lượng thành viên</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo num_rows($staff_query); ?></div>
                                 </div>
                                 <div class="col-auto">
@@ -173,7 +169,6 @@ include_once '../../templates/header.php';
                     <table class="table table-bordered" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Tên nhân viên</th>
                                 <th>Email</th>
                                 <th>Số điện thoại</th>
@@ -185,7 +180,6 @@ include_once '../../templates/header.php';
                         <tbody>
                             <?php while ($staff = fetch_array($staff_query)): ?>
                                 <tr>
-                                    <td><?php echo $staff['id']; ?></td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <img src="<?php echo BASE_URL . ($staff['avatar'] ?: 'assets/images/avatar-default.png'); ?>" 
