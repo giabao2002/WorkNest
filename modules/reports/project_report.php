@@ -98,7 +98,7 @@ $completed_sql = "SELECT COUNT(*) as count
                  FROM projects p
                  WHERE p.status_id = 3";
 if ($period != 'all') {
-    $completed_sql .= str_replace('p.created_at', 'p.updated_at', $where_condition);
+    $completed_sql .= " AND " . ltrim(str_replace('p.created_at', 'p.updated_at', $where_condition), " WHERE");
 }
 $completed_result = query($completed_sql);
 $completed_count = fetch_array($completed_result)['count'];
@@ -106,7 +106,7 @@ $completed_count = fetch_array($completed_result)['count'];
 // Tỉ lệ hoàn thành đúng hạn
 $on_time_sql = "SELECT COUNT(*) as count
                FROM projects p
-               WHERE p.status_id = 3 AND p.end_date >= p.completed_date";
+               WHERE p.status_id = 3 AND p.end_date >= p.updated_at";
 $on_time_result = query($on_time_sql);
 $on_time_count = fetch_array($on_time_result)['count'];
 

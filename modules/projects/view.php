@@ -440,7 +440,7 @@ include_once '../../templates/header.php';
                                     <td><?php echo $task['department_name'] ?: 'Chưa phân công'; ?></td>
                                     <td>
                                         <?php if ($task['assigned_to']): ?>
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center justify-content-evenly">
                                                 <img class="rounded-circle mr-2" width="30" height="30" 
                                                      src="<?php echo BASE_URL . $task['assigned_avatar']; ?>" alt="">
                                                 <?php echo $task['assigned_name']; ?>

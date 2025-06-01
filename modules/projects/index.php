@@ -80,7 +80,24 @@ $sql = "SELECT p.*, u.name as manager_name,
         FROM projects p
         LEFT JOIN users u ON p.manager_id = u.id
         $where_clause
-        ORDER BY p.status_id ASC, p.end_date ASC 
+        ORDER BY 
+            CASE 
+                WHEN p.status_id = 2 THEN 0 -- Đang thực hiện đưa lên đầu
+                WHEN p.status_id = 1 THEN 1 -- Chuẩn bị đưa lên thứ hai
+                WHEN p.status_id = 4 THEN 2 -- Tạm dừng
+                WHEN p.status_id = 3 THEN 3 -- Hoàn thành
+                WHEN p.status_id = 5 THEN 4 -- Đã hủy
+                ELSE 5
+            END,
+            CASE 
+                WHEN p.status_id IN (1, 2, 4) THEN 
+                    CASE 
+                        WHEN p.end_date < CURDATE() THEN 0 -- Quá hạn lên đầu tiên
+                        ELSE DATEDIFF(p.end_date, CURDATE()) -- Sắp đến hạn
+                    END
+                ELSE DATEDIFF(p.end_date, p.start_date) -- Với dự án đã hoàn thành hoặc đã hủy, sắp xếp theo độ dài dự án
+            END ASC,
+            p.priority DESC -- Ưu tiên cao lên trước
         LIMIT $offset, $limit";
 $result = query($sql);
 

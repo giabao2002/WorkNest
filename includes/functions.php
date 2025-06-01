@@ -159,6 +159,11 @@ function breadcrumb($items) {
 
 // Hàm định dạng thời gian
 function format_datetime($datetime, $format = 'd/m/Y H:i') {
+    // Check if datetime is null or empty
+    if (empty($datetime)) {
+        return 'N/A';
+    }
+    
     $date = new DateTime($datetime);
     
     $now = new DateTime();

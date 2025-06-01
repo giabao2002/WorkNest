@@ -27,7 +27,7 @@ require_once __DIR__ . '/../includes/functions.php';
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
             <div class="container-fluid">
-                <a class="navbar-brand d-flex align-items-center" href="<?php echo BASE_URL; ?>">
+                <a class="navbar-brand d-flex align-items-center justify-content-evenly" href="<?php echo BASE_URL; ?>">
                     <span class="fw-bold">WorkNest</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -130,7 +130,7 @@ require_once __DIR__ . '/../includes/functions.php';
 
                         <!-- User Dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
+                            <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-evenly" href="#" id="userDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <?php
                                 // Lấy thông tin người dùng hiện tại

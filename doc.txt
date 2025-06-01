@@ -1,38 +1,48 @@
-1. Tác nhân (Actors)
+I. Tác nhân (Actors)
 
-1.1. Quản lý dự án (Project Manager)
-Quản lý tổng thể các dự án.
-Theo dõi tiến độ, hiệu suất công việc của từng phòng ban và nhân viên.
-Phân công nhiệm vụ, thiết lập deadline.
-Phê duyệt báo cáo công việc, đánh giá kết quả.
+1.1 Admin (Quản trị viên hệ thống)
+Quản lý tài khoản (đăng nhập, quên mật khẩu, cập nhật thông tin, đổi mật khẩu)
+Trang chủ hiển thị tổng quan các dự án của mình.
+Quản lý dự án
+Quản lý công việc
+Quản lý người dùng
+Quản lý phòng ban
+Quản lý báo cáo
 
-1.2. Quản lý phòng ban (Department Manager)
-Quản lý các nhiệm vụ của phòng ban.
-Giao việc cho nhân viên trong phòng.
-Theo dõi, hỗ trợ tiến độ, phê duyệt báo cáo cấp phòng.
-Gửi báo cáo tổng hợp lên quản lý dự án.
+1.2. Quản lý dự án (Project Manager)
+Quản lý tài khoản (đăng nhập, quên mật khẩu, cập nhật thông tin, đổi mật khẩu)
+Trang chủ hiển thị tổng quan các dự án của mình.
+Quản lý dự án
+Quản lý công việc
+Quản lý báo cáo
 
-1.3. Nhân viên (Staff)
-Nhận nhiệm vụ được giao.
+1.3. Quản lý phòng ban (Department Manager)
+Quản lý tài khoản (đăng nhập, quên mật khẩu, cập nhật thông tin, đổi mật khẩu)
+Trang chủ hiển thị tổng quan các dự án của mình.
+Xem dự án được nhận
+Quản lý công việc
+Quản lý báo cáo
+
+1.4. Nhân viên (Staff)
+Quản lý tài khoản (đăng nhập, quên mật khẩu, cập nhật thông tin, đổi mật khẩu)
+Trang chủ hiển thị tổng quan các dự án của mình.
+Nhận công việc được giao.
 Cập nhật tiến độ, báo cáo kết quả công việc.
-Gửi yêu cầu hỗ trợ, trao đổi trong nhóm nội bộ.
 
 
-
-2. Nghiệp vụ chính (Core Business Use Cases)
+II. Nghiệp vụ chính
 
 2.1. Quản lý dự án
 Tạo, chỉnh sửa, phân loại dự án.
 Gán phòng ban phụ trách dự án.
-Thiết lập timeline tổng, milestone.
-Thiết lập mức độ ưu tiên, trạng thái (đang chạy / trễ / hoàn thành).
-Theo dõi tiến độ tổng quan theo biểu đồ Gantt hoặc Kanban.
+Thiết lập thời gian làm dự án.
+Thiết lập mức độ ưu tiên, trạng thái của dự án.
+Theo dõi tiến độ tổng quan theo biểu đồ.
 
-2.2. Phân công nhiệm vụ
+2.2. Phân công công việc
 Quản lý dự án phân chia đầu việc theo từng phòng ban.
 Quản lý phòng ban phân chia đầu việc cho từng nhân viên.
 Gắn deadline, mô tả, tài liệu đính kèm.
-Thiết lập công việc phụ thuộc, công việc song song.
 
 2.3. Cập nhật tiến độ
 Nhân viên cập nhật trạng thái công việc (Chưa bắt đầu → Đang làm → Hoàn thành).
@@ -42,41 +52,23 @@ Hệ thống tự động tổng hợp % hoàn thành theo phân công.
 2.4. Báo cáo công việc
 Báo cáo theo từng cá nhân, nhóm, phòng ban, toàn dự án.
 Hệ thống tự sinh báo cáo tuần/tháng theo tiến độ.
-Có thể gửi báo cáo tự động qua email.
 
-2.5. Nhắc nhở & Cảnh báo
-Tự động nhắc nhở công việc sắp đến hạn qua email.
-Cảnh báo trễ deadline, không cập nhật tiến độ quá số ngày cho phép.
-
-2.6. Trao đổi, bình luận công việc
-Mỗi nhiệm vụ có phần bình luận.
-Có thể gắn thẻ người liên quan, đính kèm file.
+2.5. Trao đổi, bình luận công việc
+Mỗi công việc có phần bình luận.
 Hỗ trợ trao đổi nhanh, giảm thời gian họp.
 
-2.7. Chấm điểm, đánh giá kết quả
-Quản lý dự án và quản lý phòng ban có thể chấm điểm công việc theo các tiêu chí.
-Hệ thống tự tính điểm hiệu suất theo deadline, chất lượng, báo cáo.
-Dữ liệu đánh giá lưu lại để sử dụng cuối kỳ, khen thưởng.
 
-2.8. Quản lý tài khoản
-Quên mật khẩu, đăng nhập
-Cập nhật thông tin cá nhân, đổi mật khẩu
-
-3. Tính năng tự động (Automation Features)
+III. Tính năng tự động (Automation Features)
 Tự động tổng hợp % hoàn thành dự án theo trạng thái công việc.
 Tự động nhắc việc theo lịch biểu và thời hạn công việc.
 Sinh báo cáo tuần/tháng theo mẫu có sẵn.
 Đánh giá hiệu suất dựa trên thời gian hoàn thành và mức độ tham gia.
+Theo dõi tiến , hiệu suất công việc của từng phòng ban và nhân viên.
 
-4. Dashboard theo vai trò
-| Tác nhân          | Giao diện Dashboard                                        |
-| Quản lý dự án     | Dự án tổng thể, trạng thái, báo cáo nhanh, biểu đồ tiến độ |
-| Quản lý phòng ban | Công việc phòng ban, tiến độ nhóm, theo dõi nhân viên      |
-| Nhân viên         | Danh sách công việc cá nhân, hạn chót, tiến độ, bình luận  |
 
-5. Quy trình mẫu thực tế
+IV. Quy trình mẫu thực tế
 1. Quản lý dự án tạo dự án → phân bổ cho các quản lý phòng ban.
-2. Quản lý phòng ban tạo nhiệm vụ cụ thể và gán cho nhân viên.
+2. Quản lý phòng ban tạo công việc cụ thể và gán cho nhân viên.
 3. Nhân viên cập nhật tiến độ và gửi báo cáo.
-4. Hệ thống tổng hợp tiến độ dự án → gửi báo cáo tự động hàng tuần.
-5. Quản lý cấp trên theo dõi, đánh giá, và điều chỉnh kịp thời.
+4. Hệ thống tổng hợp tiến độ dự án.
+5. Quản lý cấp trên theo dõi, đánh giá công việc.

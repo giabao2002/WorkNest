@@ -126,15 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = query($sql);
         
         if ($result) {
-            // Ghi nhật ký cập nhật
-            if (isset($_POST['add_comment']) && !empty($_POST['comment'])) {
-                $comment = escape_string($_POST['comment']);
-                
-                $comment_sql = "INSERT INTO task_comments (task_id, user_id, comment, progress, status_id, created_at)
-                              VALUES ($task_id, $user_id, '$comment', $progress, $status_id, NOW())";
-                query($comment_sql);
-            }
-            
             // Tạo thông báo cho người được giao việc (nếu có thay đổi)
             if ($assigned_to !== 'NULL' && $assigned_to != $task['assigned_to']) {
                 $notification_message = "Bạn được giao công việc: $title";
@@ -356,18 +347,6 @@ include_once '../../templates/header.php';
                                     <input type="number" class="form-control" id="progress" name="progress" min="0" max="100" 
                                            value="<?php echo isset($_POST['progress']) ? (int)$_POST['progress'] : $task['progress']; ?>">
                                 </div>
-                                
-                                <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="add_comment" name="add_comment" value="1" checked>
-                                        <label class="custom-control-label" for="add_comment">Ghi nhật ký cập nhật</label>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group" id="comment-group">
-                                    <label for="comment">Ghi chú cập nhật</label>
-                                    <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -392,23 +371,12 @@ include_once '../../templates/header.php';
 document.addEventListener('DOMContentLoaded', function() {
     var statusSelect = document.getElementById('status_id');
     var progressInput = document.getElementById('progress');
-    var addCommentCheckbox = document.getElementById('add_comment');
-    var commentGroup = document.getElementById('comment-group');
     
     statusSelect.addEventListener('change', function() {
         if (statusSelect.value == '3') { // Hoàn thành
             progressInput.value = 100;
         } else if (statusSelect.value == '1') { // Chưa bắt đầu
             progressInput.value = 0;
-        }
-    });
-    
-    // Hiển thị/ẩn ô ghi chú
-    addCommentCheckbox.addEventListener('change', function() {
-        if (addCommentCheckbox.checked) {
-            commentGroup.style.display = 'block';
-        } else {
-            commentGroup.style.display = 'none';
         }
     });
 });

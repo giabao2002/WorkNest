@@ -77,7 +77,7 @@ if ($parent_id > 0) {
 }
 
 // Xử lý form thêm công việc
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_task'])) {
     // Lấy dữ liệu từ form
     $title = escape_string($_POST['title']);
     $description = escape_string($_POST['description']);
@@ -88,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $priority = (int)$_POST['priority'];
     $start_date = escape_string($_POST['start_date']);
     $due_date = escape_string($_POST['due_date']);
-    $progress = (int)$_POST['progress'];
     $parent_id = !empty($_POST['parent_id']) ? (int)$_POST['parent_id'] : 'NULL';
     
     // Kiểm tra dữ liệu
@@ -102,18 +101,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Vui lòng chọn dự án';
     }
     
-    if (empty($start_date)) {
-        $errors[] = 'Vui lòng chọn ngày bắt đầu';
-    }
-    
-    if (empty($due_date)) {
-        $errors[] = 'Vui lòng chọn ngày hoàn thành';
-    } elseif ($due_date < $start_date) {
-        $errors[] = 'Ngày hoàn thành phải sau ngày bắt đầu';
-    }
-    
-    if ($progress < 0 || $progress > 100) {
-        $errors[] = 'Tiến độ phải từ 0 đến 100%';
+    // Lấy thông tin dự án để kiểm tra ngày
+    if ($project_id > 0) {
+        $project_info_sql = "SELECT start_date, end_date FROM projects WHERE id = $project_id";
+        $project_info_result = query($project_info_sql);
+        if (num_rows($project_info_result) > 0) {
+            $project_info = fetch_array($project_info_result);
+            $project_start_date = $project_info['start_date'];
+            $project_end_date = $project_info['end_date'];
+            
+            if (empty($start_date)) {
+                $errors[] = 'Vui lòng chọn ngày bắt đầu';
+            } elseif ($start_date < $project_start_date) {
+                $errors[] = 'Ngày bắt đầu công việc không thể trước ngày bắt đầu dự án (' . format_date($project_start_date) . ')';
+            }
+            
+            if (empty($due_date)) {
+                $errors[] = 'Vui lòng chọn ngày hoàn thành';
+            } elseif ($due_date < $start_date) {
+                $errors[] = 'Ngày hoàn thành phải sau ngày bắt đầu';
+            }
+        }
+    } else {
+        if (empty($start_date)) {
+            $errors[] = 'Vui lòng chọn ngày bắt đầu';
+        }
+        
+        if (empty($due_date)) {
+            $errors[] = 'Vui lòng chọn ngày hoàn thành';
+        } elseif ($due_date < $start_date) {
+            $errors[] = 'Ngày hoàn thành phải sau ngày bắt đầu';
+        }
     }
     
     // Nếu không có lỗi, thêm công việc mới
@@ -127,10 +145,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Thêm công việc mới
         $sql = "INSERT INTO tasks (
                 title, description, project_id, department_id, assigned_to, assigned_by,
-                status_id, priority, start_date, due_date, progress, parent_id, completed_date, created_at
+                status_id, priority, start_date, due_date, parent_id, completed_date, created_at
                 ) VALUES (
                 '$title', '$description', $project_id, $department_id, $assigned_to, $assigned_by,
-                $status_id, $priority, '$start_date', '$due_date', $progress, $parent_id, $completed_date, NOW()
+                $status_id, $priority, '$start_date', '$due_date', $parent_id, $completed_date, NOW()
                 )";
         $result = query($sql);
         
@@ -306,7 +324,7 @@ include_once '../../templates/header.php';
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="department_id">Phòng ban phụ trách</label>
-                                    <select class="form-control" id="department_id" name="department_id" onchange="this.form.submit()">
+                                    <select class="form-control" id="department_id" name="department_id">
                                         <option value="">-- Chọn phòng ban --</option>
                                         <?php mysqli_data_seek($departments_result, 0); ?>
                                         <?php while ($d = fetch_array($departments_result)): ?>
@@ -348,14 +366,27 @@ include_once '../../templates/header.php';
                                     <label for="assigned_to">Người thực hiện</label>
                                     <select class="form-control" id="assigned_to" name="assigned_to">
                                         <option value="">-- Chọn người thực hiện --</option>
-                                        <?php foreach ($users as $id => $name): ?>
-                                            <option value="<?php echo $id; ?>" 
-                                                    <?php echo (isset($_POST['assigned_to']) && $_POST['assigned_to'] == $id) ? 'selected' : ''; ?>>
-                                                <?php echo $name; ?>
-                                            </option>
-                                        <?php endforeach; ?>
+                                        <?php if (isset($_POST['department_id']) && !empty($_POST['department_id'])): ?>
+                                            <?php foreach ($users as $id => $name): ?>
+                                                <option value="<?php echo $id; ?>" 
+                                                        <?php echo (isset($_POST['assigned_to']) && $_POST['assigned_to'] == $id) ? 'selected' : ''; ?>>
+                                                    <?php echo $name; ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        <?php elseif (isset($department_id) && $department_id > 0): ?>
+                                            <?php
+                                            // Lấy danh sách nhân viên cho phòng ban đã chọn sẵn
+                                            $dept_users_sql = "SELECT id, name, email FROM users WHERE department_id = $department_id ORDER BY name";
+                                            $dept_users_result = query($dept_users_sql);
+                                            while ($user = fetch_array($dept_users_result)): 
+                                            ?>
+                                                <option value="<?php echo $user['id']; ?>">
+                                                    <?php echo $user['name'] . ' (' . $user['email'] . ')'; ?>
+                                                </option>
+                                            <?php endwhile; ?>
+                                        <?php endif; ?>
                                     </select>
-                                    <?php if (empty($users)): ?>
+                                    <?php if (empty($users) && !isset($department_id)): ?>
                                         <small class="form-text text-muted">Chọn phòng ban để hiển thị danh sách nhân viên</small>
                                     <?php endif; ?>
                                 </div>
@@ -383,12 +414,6 @@ include_once '../../templates/header.php';
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="progress">Tiến độ (%)</label>
-                                    <input type="number" class="form-control" id="progress" name="progress" min="0" max="100" 
-                                           value="<?php echo isset($_POST['progress']) ? (int)$_POST['progress'] : 0; ?>">
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -396,7 +421,7 @@ include_once '../../templates/header.php';
                 
                 <!-- Nút submit -->
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" name="save_task" class="btn btn-primary">
                         <i class="fas fa-save"></i> Lưu công việc
                     </button>
                     <a href="<?php echo $parent_id > 0 ? 'view.php?id=' . $parent_id : 'index.php'; ?>" class="btn btn-secondary ml-2">
@@ -412,14 +437,47 @@ include_once '../../templates/header.php';
 // Cập nhật progress tự động khi chọn trạng thái
 document.addEventListener('DOMContentLoaded', function() {
     var statusSelect = document.getElementById('status_id');
-    var progressInput = document.getElementById('progress');
     
     statusSelect.addEventListener('change', function() {
         if (statusSelect.value == '3') { // Hoàn thành
-            progressInput.value = 100;
+            // Trạng thái hoàn thành không cần thêm xử lý
         } else if (statusSelect.value == '1') { // Chưa bắt đầu
-            progressInput.value = 0;
+            // Trạng thái chưa bắt đầu
         }
+    });
+    
+    // Load nhân viên khi chọn phòng ban
+    var departmentSelect = document.getElementById('department_id');
+    var assignedToSelect = document.getElementById('assigned_to');
+    
+    departmentSelect.addEventListener('change', function() {
+        var departmentId = this.value;
+        if (departmentId === '') {
+            // Xóa danh sách nhân viên nếu không chọn phòng ban
+            assignedToSelect.innerHTML = '<option value="">-- Chọn người thực hiện --</option>';
+            return;
+        }
+        
+        // Sử dụng AJAX để lấy danh sách nhân viên
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'get_users.php?department_id=' + departmentId, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                try {
+                    var users = JSON.parse(xhr.responseText);
+                    assignedToSelect.innerHTML = '<option value="">-- Chọn người thực hiện --</option>';
+                    users.forEach(function(user) {
+                        var option = document.createElement('option');
+                        option.value = user.id;
+                        option.text = user.name + ' (' + user.email + ')';
+                        assignedToSelect.appendChild(option);
+                    });
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                }
+            }
+        };
+        xhr.send();
     });
 });
 </script>

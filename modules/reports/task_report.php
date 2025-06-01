@@ -417,7 +417,7 @@ include_once '../../templates/header.php';
                                         ?>
                                         <tr>
                                             <td>
-                                                <div class="d-flex align-items-center">
+                                                <div class="d-flex align-items-center justify-content-evenly">
                                                     <img src="<?php echo BASE_URL . $user['avatar']; ?>" class="rounded-circle mr-2" width="30" height="30">
                                                     <?php echo $user['name']; ?>
                                                 </div>
@@ -484,7 +484,7 @@ include_once '../../templates/header.php';
                                             <td><?php echo $task['project_name']; ?></td>
                                             <td>
                                                 <?php if ($task['assigned_name']): ?>
-                                                    <div class="d-flex align-items-center">
+                                                    <div class="d-flex align-items-center justify-content-evenly">
                                                         <img src="<?php echo BASE_URL . $task['assigned_avatar']; ?>" class="rounded-circle mr-2" width="30" height="30">
                                                         <?php echo $task['assigned_name']; ?>
                                                     </div>
@@ -537,7 +537,7 @@ include_once '../../templates/header.php';
                         <?php if (num_rows($project_stats_result) > 0): ?>
                             <?php while ($project = fetch_array($project_stats_result)): ?>
                                 <?php 
-                                $avg_progress = round($project['avg_progress']);
+                                $avg_progress = is_null($project['avg_progress']) ? 0 : round($project['avg_progress']);
                                 $completion_rate = $project['task_count'] > 0 ? 
                                     round(($project['completed_count'] / $project['task_count']) * 100) : 0;
                                 ?>

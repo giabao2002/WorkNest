@@ -409,7 +409,7 @@ include_once '../../templates/header.php';
                     <div class="row">
                         <?php foreach ($managed_department['staff'] as $staff): ?>
                         <div class="col-md-6 mb-3">
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center justify-content-evenly">
                                 <img src="<?php echo BASE_URL . $staff['avatar']; ?>" alt="Avatar" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;">
                                 <div>
                                     <h6 class="mb-0"><?php echo $staff['name']; ?></h6>

@@ -479,7 +479,7 @@ include_once '../../templates/header.php';
                                     <?php endif; ?>
                                     <td>
                                         <?php if ($task['assigned_to']): ?>
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center justify-content-evenly justify-content-evenly">
                                                 <img class="rounded-circle mr-2" width="30" height="30" 
                                                      src="<?php echo BASE_URL . $task['assigned_avatar']; ?>" alt="">
                                                 <a href="index.php?user_id=<?php echo $task['assigned_to']; ?>">

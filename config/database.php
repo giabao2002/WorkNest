@@ -29,7 +29,13 @@ function escape_string($string) {
 // Hàm thực hiện câu truy vấn
 function query($sql) {
     global $conn;
-    return mysqli_query($conn, $sql);
+    $result = mysqli_query($conn, $sql);
+    if (!$result) {
+        // In ra lỗi để dễ dàng debug
+        echo "<p>Lỗi SQL: " . mysqli_error($conn) . "</p>";
+        echo "<p>Câu truy vấn: " . $sql . "</p>";
+    }
+    return $result;
 }
 
 // Hàm lấy dữ liệu dạng mảng liên kết

@@ -181,7 +181,7 @@ include_once '../../templates/header.php';
                             <?php while ($staff = fetch_array($staff_query)): ?>
                                 <tr>
                                     <td>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center justify-content-evenly">
                                             <img src="<?php echo BASE_URL . ($staff['avatar'] ?: 'assets/images/avatar-default.png'); ?>" 
                                                  class="rounded-circle mr-2" width="40" height="40" alt="Avatar">
                                             <?php echo $staff['name']; ?>

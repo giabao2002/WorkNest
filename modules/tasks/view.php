@@ -70,12 +70,12 @@ if (!$can_view) {
 // Kiểm tra quyền cập nhật tiến độ
 $can_update_progress = has_permission('admin') || has_permission('project_manager') || 
                        $task['assigned_by'] == $user_id || $task['assigned_to'] == $user_id ||
-                       ($has_permission('department_manager') && $task['department_manager_id'] == $user_id);
+                       (has_permission('department_manager') && $task['department_manager_id'] == $user_id);
 
 // Kiểm tra quyền sửa công việc
 $can_edit = has_permission('admin') || has_permission('project_manager') || 
             $task['assigned_by'] == $user_id || 
-            ($has_permission('department_manager') && $task['department_manager_id'] == $user_id);
+            (has_permission('department_manager') && $task['department_manager_id'] == $user_id);
 
 // Kiểm tra quyền xóa công việc
 $can_delete = has_permission('admin') || has_permission('project_manager') || 
@@ -85,17 +85,12 @@ $can_delete = has_permission('admin') || has_permission('project_manager') ||
 if (isset($_POST['update_progress']) && $can_update_progress) {
     $progress = (int)$_POST['progress'];
     $status_id = (int)$_POST['status_id'];
-    $comment = escape_string($_POST['comment']);
     
     // Kiểm tra dữ liệu
     $errors = [];
     
     if ($progress < 0 || $progress > 100) {
         $errors[] = 'Tiến độ phải từ 0 đến 100%';
-    }
-    
-    if (empty($comment)) {
-        $errors[] = 'Vui lòng nhập ghi chú cập nhật';
     }
     
     // Nếu không có lỗi, cập nhật tiến độ
@@ -110,11 +105,6 @@ if (isset($_POST['update_progress']) && $can_update_progress) {
                 $completed_date
                 WHERE id = $task_id";
         query($sql);
-        
-        // Thêm ghi chú tiến độ
-        $comment_sql = "INSERT INTO task_comments (task_id, user_id, comment, progress, status_id, created_at)
-                      VALUES ($task_id, $user_id, '$comment', $progress, $status_id, NOW())";
-        query($comment_sql);
         
         // Tạo thông báo cho người giao việc (nếu người cập nhật là người được giao việc)
         if ($task['assigned_to'] == $user_id && $task['assigned_by'] != $user_id) {
@@ -141,12 +131,12 @@ if (isset($_POST['update_progress']) && $can_update_progress) {
     }
 }
 
-// Lấy lịch sử tiến độ
-$history_sql = "SELECT tc.*, u.name as user_name, u.avatar as user_avatar
-               FROM task_comments tc
-               JOIN users u ON tc.user_id = u.id
-               WHERE tc.task_id = $task_id
-               ORDER BY tc.created_at DESC";
+// Lấy lịch sử bình luận
+$history_sql = "SELECT c.*, u.name as user_name, u.avatar as user_avatar
+               FROM comments c
+               JOIN users u ON c.user_id = u.id
+               WHERE c.task_id = $task_id
+               ORDER BY c.created_at DESC";
 $history_result = query($history_sql);
 
 // Lấy danh sách công việc con (nếu có)
@@ -194,6 +184,27 @@ if ($task['status_id'] != 3 && $task['status_id'] != 5) { // Nếu không phải
 
 // Tiêu đề trang
 $page_title = "Chi tiết công việc: " . $task['title'];
+
+// Thêm bình luận mới
+if (isset($_POST['add_comment'])) {
+    $comment_content = escape_string($_POST['comment_content']);
+    
+    if (empty($comment_content)) {
+        $errors[] = "Nội dung bình luận không được để trống.";
+    } else {
+        // Thêm bình luận
+        $insert_comment_sql = "INSERT INTO comments (task_id, user_id, content, created_at) 
+                             VALUES ($task_id, $user_id, '$comment_content', NOW())";
+        $insert_result = query($insert_comment_sql);
+        
+        if ($insert_result) {
+            set_flash_message("Đã thêm bình luận thành công.", "success");
+            redirect('modules/tasks/view.php?id=' . $task_id);
+        } else {
+            $errors[] = "Có lỗi xảy ra khi thêm bình luận.";
+        }
+    }
+}
 
 // Include header
 include_once '../../templates/header.php';
@@ -428,7 +439,7 @@ include_once '../../templates/header.php';
                                             <td><?php echo $subtask['title']; ?></td>
                                             <td>
                                                 <?php if ($subtask['assigned_to']): ?>
-                                                    <div class="d-flex align-items-center">
+                                                    <div class="d-flex align-items-center justify-content-evenly">
                                                         <img class="rounded-circle mr-2" width="30" height="30" 
                                                              src="<?php echo BASE_URL . $subtask['assigned_avatar']; ?>" alt="">
                                                         <?php echo $subtask['assigned_name']; ?>
@@ -504,11 +515,6 @@ include_once '../../templates/header.php';
                             </select>
                         </div>
                         
-                        <div class="form-group">
-                            <label for="comment">Ghi chú cập nhật</label>
-                            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
-                        </div>
-                        
                         <button type="submit" name="update_progress" class="btn btn-primary btn-block">
                             <i class="fas fa-save"></i> Cập nhật tiến độ
                         </button>
@@ -517,48 +523,56 @@ include_once '../../templates/header.php';
             </div>
             <?php endif; ?>
             
-            <!-- Lịch sử cập nhật -->
+            <!-- Form thêm bình luận -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Lịch sử cập nhật</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Thêm bình luận</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="">
+                        <div class="form-group">
+                            <textarea class="form-control" name="comment_content" rows="3" placeholder="Nhập bình luận của bạn..."></textarea>
+                        </div>
+                        <button type="submit" name="add_comment" class="btn btn-primary">Gửi bình luận</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Bình luận -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Bình luận</h6>
                 </div>
                 <div class="card-body">
                     <?php if (num_rows($history_result) > 0): ?>
                         <div class="timeline">
-                            <?php while ($history = fetch_array($history_result)): ?>
-                                <?php 
-                                // Xác định màu cho trạng thái
-                                $history_status_color = $status_list[$history['status_id']]['color'];
-                                ?>
+                            <?php while ($comment = fetch_array($history_result)): ?>
                                 <div class="timeline-item">
                                     <div class="timeline-item-marker">
-                                        <div class="timeline-item-marker-text">
-                                            <?php echo format_datetime($history['created_at'], true); ?>
-                                        </div>
-                                        <div class="timeline-item-marker-indicator bg-<?php echo $history_status_color; ?>"></div>
+                                        <div class="timeline-item-marker-text"><?php echo format_datetime($comment['created_at']); ?></div>
+                                        <div class="timeline-item-marker-indicator bg-primary"></div>
                                     </div>
                                     <div class="timeline-item-content">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <img src="<?php echo BASE_URL . $history['user_avatar']; ?>" class="rounded-circle mr-2" width="30" height="30">
-                                            <strong><?php echo $history['user_name']; ?></strong>
+                                        <div class="d-flex align-items-center justify-content-evenly mb-2">
+                                            <img src="<?php echo BASE_URL . $comment['user_avatar']; ?>" class="rounded-circle mr-2" width="30" height="30">
+                                            <strong><?php echo $comment['user_name']; ?></strong>
                                         </div>
-                                        <div class="mb-2">
-                                            <span class="badge badge-<?php echo $history_status_color; ?>">
-                                                <?php echo $status_list[$history['status_id']]['name']; ?>
-                                            </span>
-                                            <span class="ml-2">Tiến độ: <?php echo $history['progress']; ?>%</span>
-                                        </div>
-                                        <div class="comment-text p-2 bg-light rounded">
-                                            <?php echo nl2br($history['comment']); ?>
-                                        </div>
+                                        
+                                        <?php if (!empty($comment['content'])): ?>
+                                            <div class="card bg-light mb-2">
+                                                <div class="card-body py-2 px-3">
+                                                    <?php echo nl2br(htmlspecialchars($comment['content'])); ?>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             <?php endwhile; ?>
                         </div>
                     <?php else: ?>
-                        <p class="text-center text-muted">
-                            Chưa có cập nhật nào cho công việc này.
-                        </p>
+                        <div class="alert alert-info">
+                            Chưa có bình luận nào cho công việc này.
+                        </div>
                     <?php endif; ?>
                 </div>
             </div>
@@ -584,7 +598,7 @@ include_once '../../templates/header.php';
 .timeline-item-marker {
     position: absolute;
     left: -0.25rem;
-    width: 1.5rem;
+    width: 2rem;
 }
 .timeline-item-marker-text {
     font-size: 0.8rem;

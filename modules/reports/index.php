@@ -130,56 +130,6 @@ include_once '../../templates/header.php';
                 </div>
             </div>
         </div>
-        
-        <!-- Báo cáo tổng hợp -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Báo cáo tổng hợp</div>
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                Tổng quan hệ thống
-                            </div>
-                            <p class="mt-2 small text-muted">
-                                Báo cáo tổng quan chung về tình hình hoạt động của toàn bộ hệ thống.
-                            </p>
-                            <a href="summary_report.php" class="btn btn-danger btn-sm mt-2">
-                                <i class="fas fa-chart-pie fa-sm text-white-50"></i> Xem báo cáo
-                            </a>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Xuất báo cáo -->
-        <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card border-left-secondary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">Xuất báo cáo</div>
-                            <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
-                                Xuất báo cáo ra file
-                            </div>
-                            <p class="mt-2 small text-muted">
-                                Xuất các loại báo cáo ra các định dạng Excel, CSV, PDF để lưu trữ.
-                            </p>
-                            <a href="export.php" class="btn btn-secondary btn-sm mt-2">
-                                <i class="fas fa-file-export fa-sm text-white-50"></i> Xuất báo cáo
-                            </a>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-file-download fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 

@@ -189,7 +189,7 @@ while ($department = fetch_array($departments_result)) {
                                 <tr>
                                     <td><?php echo $user['id']; ?></td>
                                     <td>
-                                        <div class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center justify-content-evenly">
                                             <img src="<?php echo BASE_URL . $user['avatar']; ?>" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                             <?php echo $user['name']; ?>
                                         </div>
