@@ -1,4 +1,3 @@
-
 -- phpMyAdmin SQL Dump
 -- version 5.2.2
 -- https://www.phpmyadmin.net/
@@ -175,10 +174,12 @@ CREATE TABLE `reports` (
   `id` int NOT NULL,
   `title` varchar(200) NOT NULL,
   `content` text NOT NULL,
-  `report_type` enum('daily','weekly','monthly','project') NOT NULL,
+  `report_type` enum('daily','weekly','monthly','project','task') NOT NULL,
+  `task_id` int DEFAULT NULL,
   `project_id` int DEFAULT NULL,
   `department_id` int DEFAULT NULL,
   `user_id` int NOT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -338,7 +339,8 @@ ALTER TABLE `reports`
   ADD KEY `project_id` (`project_id`),
   ADD KEY `department_id` (`department_id`),
   ADD KEY `user_id` (`user_id`),
-  ADD KEY `report_type` (`report_type`);
+  ADD KEY `report_type` (`report_type`),
+  ADD KEY `task_id` (`task_id`);
 
 --
 -- Indexes for table `tasks`
@@ -497,6 +499,7 @@ ALTER TABLE `project_departments`
 ALTER TABLE `reports`
   ADD CONSTRAINT `fk_reports_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_reports_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_reports_task` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_reports_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --

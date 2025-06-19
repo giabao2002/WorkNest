@@ -206,6 +206,85 @@ if (isset($_POST['add_comment'])) {
     }
 }
 
+// Xử lý nộp báo cáo công việc
+if (isset($_POST['submit_report']) && $task['assigned_to'] == $user_id) {
+    $report_title = escape_string($_POST['report_title']);
+    $report_content = escape_string($_POST['report_content']);
+    $file_path = null;
+    
+    // Kiểm tra dữ liệu
+    $errors = [];
+    
+    if (empty($report_title)) {
+        $errors[] = "Tiêu đề báo cáo không được để trống.";
+    }
+    
+    if (empty($report_content)) {
+        $errors[] = "Nội dung báo cáo không được để trống.";
+    }
+    
+    // Xử lý tệp đính kèm nếu có
+    if (!empty($_FILES['report_file']['name'])) {
+        $upload_dir = 'uploads/reports/';
+        $file_name = time() . '_' . $_FILES['report_file']['name'];
+        $upload_path = '../../' . $upload_dir . $file_name;
+        
+        // Kiểm tra kích thước tệp (tối đa 10MB)
+        if ($_FILES['report_file']['size'] > 10 * 1024 * 1024) {
+            $errors[] = "Kích thước tệp vượt quá 10MB.";
+        }
+        
+        // Kiểm tra định dạng tệp
+        $allowed_extensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'zip', 'rar', 'jpg', 'jpeg', 'png'];
+        $file_ext = strtolower(pathinfo($_FILES['report_file']['name'], PATHINFO_EXTENSION));
+        
+        if (!in_array($file_ext, $allowed_extensions)) {
+            $errors[] = "Định dạng tệp không được hỗ trợ.";
+        }
+        
+        // Tạo thư mục uploads nếu chưa tồn tại
+        if (!file_exists('../../' . $upload_dir)) {
+            mkdir('../../' . $upload_dir, 0777, true);
+        }
+        
+        // Upload tệp
+        if (empty($errors)) {
+            if (move_uploaded_file($_FILES['report_file']['tmp_name'], $upload_path)) {
+                $file_path = $upload_dir . $file_name;
+            } else {
+                $errors[] = "Có lỗi xảy ra khi tải tệp lên.";
+            }
+        }
+    }
+    
+    // Nếu không có lỗi, lưu báo cáo
+    if (empty($errors)) {
+        $file_path_sql = $file_path ? "'$file_path'" : "NULL";
+        
+        // Thêm báo cáo mới
+        $sql = "INSERT INTO reports (title, content, report_type, task_id, project_id, user_id, file_path, created_at) 
+                VALUES ('$report_title', '$report_content', 'task', $task_id, {$task['project_id']}, $user_id, $file_path_sql, NOW())";
+        $result = query($sql);
+        
+        if ($result) {
+            // Tạo thông báo cho người giao việc
+            if ($task['assigned_by'] != $user_id) {
+                $notification_message = "Nhân viên " . $_SESSION['user_name'] . " đã nộp báo cáo cho công việc \"" . $task['title'] . "\"";
+                $notification_link = "modules/tasks/view.php?id=$task_id";
+                
+                $notification_sql = "INSERT INTO notifications (user_id, message, link, created_at)
+                                   VALUES ({$task['assigned_by']}, '$notification_message', '$notification_link', NOW())";
+                query($notification_sql);
+            }
+            
+            set_flash_message("Nộp báo cáo thành công.", "success");
+            redirect('modules/tasks/view.php?id=' . $task_id);
+        } else {
+            $errors[] = "Có lỗi xảy ra khi nộp báo cáo.";
+        }
+    }
+}
+
 // Include header
 include_once '../../templates/header.php';
 ?>
@@ -538,6 +617,93 @@ include_once '../../templates/header.php';
                 </div>
             </div>
             
+            <!-- Báo cáo công việc -->
+            <?php if ($task['assigned_to'] == $user_id): ?>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Nộp kết quả báo cáo công việc</h6>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="report_title">Tiêu đề báo cáo</label>
+                            <input type="text" class="form-control" id="report_title" name="report_title" placeholder="Nhập tiêu đề báo cáo...">
+                        </div>
+                        <div class="form-group">
+                            <label for="report_content">Nội dung báo cáo</label>
+                            <textarea class="form-control" id="report_content" name="report_content" rows="4" placeholder="Nội dung báo cáo chi tiết..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="report_file">Đính kèm tệp (nếu có)</label>
+                            <input type="file" class="form-control-file" id="report_file" name="report_file">
+                            <small class="form-text text-muted">Định dạng hỗ trợ: PDF, Word, Excel, Zip (tối đa 10MB)</small>
+                        </div>
+                        <button type="submit" name="submit_report" class="btn btn-success">Nộp báo cáo</button>
+                    </form>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Lịch sử báo cáo -->
+            <?php if ($can_view): ?>
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">Lịch sử báo cáo kết quả công việc</h6>
+                </div>
+                <div class="card-body">
+                    <?php 
+                    // Lấy lịch sử báo cáo cho công việc này
+                    $reports_sql = "SELECT r.*, u.name as user_name, u.avatar as user_avatar 
+                                   FROM reports r
+                                   JOIN users u ON r.user_id = u.id
+                                   WHERE r.task_id = $task_id
+                                   ORDER BY r.created_at DESC";
+                    $reports_result = query($reports_sql);
+                    
+                    if (num_rows($reports_result) > 0):
+                    ?>
+                        <div class="timeline timeline-report">
+                            <?php while ($report = fetch_array($reports_result)): ?>
+                                <div class="timeline-item">
+                                    <div class="timeline-item-marker">
+                                        <div class="timeline-item-marker-text"><?php echo format_datetime($report['created_at']); ?></div>
+                                        <div class="timeline-item-marker-indicator bg-success"></div>
+                                    </div>
+                                    <div class="timeline-item-content">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <img src="<?php echo BASE_URL . $report['user_avatar']; ?>" class="rounded-circle mr-2" width="30" height="30">
+                                            <strong><?php echo $report['user_name']; ?></strong>
+                                            <span class="badge badge-success ml-2">Báo cáo chính thức</span>
+                                        </div>
+                                        
+                                        <h6 class="font-weight-bold"><?php echo $report['title']; ?></h6>
+                                        
+                                        <div class="card bg-light mb-2">
+                                            <div class="card-body py-2 px-3">
+                                                <?php echo nl2br(htmlspecialchars($report['content'])); ?>
+                                            </div>
+                                        </div>
+                                        
+                                        <?php if (!empty($report['file_path'])): ?>
+                                        <div>
+                                            <a href="<?php echo BASE_URL . $report['file_path']; ?>" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-download"></i> Tải tệp đính kèm
+                                            </a>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            <?php endwhile; ?>
+                        </div>
+                    <?php else: ?>
+                        <div class="alert alert-info">
+                            Chưa có báo cáo nào cho công việc này.
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+            
             <!-- Bình luận -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
@@ -545,7 +711,7 @@ include_once '../../templates/header.php';
                 </div>
                 <div class="card-body">
                     <?php if (num_rows($history_result) > 0): ?>
-                        <div class="timeline">
+                        <div class="timeline timeline-comment">
                             <?php while ($comment = fetch_array($history_result)): ?>
                                 <div class="timeline-item">
                                     <div class="timeline-item-marker">
@@ -627,6 +793,26 @@ include_once '../../templates/header.php';
 }
 .timeline-item-content {
     padding-bottom: 0.5rem;
+}
+
+/* Reports style - to visually differentiate from comments */
+.timeline-report .timeline-item-marker-indicator {
+    background-color: #28a745 !important;
+}
+.timeline-report .timeline-item::before {
+    background-color: #28a745;
+}
+.timeline-report .card {
+    border-left: 4px solid #28a745;
+}
+.timeline-report .timeline-item-content h6 {
+    color: #28a745;
+}
+.timeline-comment .timeline-item-marker-indicator {
+    background-color: #4e73df !important;
+}
+.timeline-comment .timeline-item::before {
+    background-color: #4e73df;
 }
 </style>
 
