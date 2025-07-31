@@ -27,8 +27,18 @@ if ($project_id > 0) {
     if (num_rows($project_query) > 0) {
         $project = fetch_array($project_query);
         
+        // Nếu là project_manager, kiểm tra xem họ có phải là người quản lý dự án không
+        if (has_permission('project_manager') && !has_permission('admin')) {
+            $user_id = $_SESSION['user_id'];
+            
+            // Kiểm tra người dùng có phải là người quản lý dự án này không
+            if ($project['manager_id'] != $user_id) {
+                set_flash_message('Bạn không phải là người quản lý dự án này', 'danger');
+                redirect('modules/tasks/');
+            }
+        }
         // Nếu là quản lý phòng ban, kiểm tra xem phòng ban có tham gia dự án không
-        if (has_permission('department_manager')) {
+        elseif (has_permission('department_manager')) {
             $user_id = $_SESSION['user_id'];
             $dept_query = query("SELECT d.id FROM departments d WHERE d.manager_id = $user_id");
             
@@ -178,8 +188,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_task'])) {
 // Lấy danh sách dự án
 $projects_sql = "SELECT id, name FROM projects";
 
+// Nếu là project_manager, chỉ lấy dự án do họ quản lý
+if (has_permission('project_manager') && !has_permission('admin')) {
+    $user_id = $_SESSION['user_id'];
+    $projects_sql = "SELECT id, name FROM projects WHERE manager_id = $user_id";
+}
 // Nếu là quản lý phòng ban, chỉ lấy dự án của phòng ban mình quản lý
-if (has_permission('department_manager')) {
+elseif (has_permission('department_manager')) {
     $user_id = $_SESSION['user_id'];
     $dept_query = query("SELECT id FROM departments WHERE manager_id = $user_id");
     
@@ -207,7 +222,8 @@ if ($project_id > 0) {
 }
 
 // Nếu là quản lý phòng ban, chỉ lấy phòng ban mình quản lý
-if (has_permission('department_manager')) {
+// Admin và project_manager có quyền xem tất cả phòng ban
+if (has_permission('department_manager') && !has_permission('admin') && !has_permission('project_manager')) {
     $user_id = $_SESSION['user_id'];
     $departments_sql = "SELECT id, name FROM departments WHERE manager_id = $user_id";
 }

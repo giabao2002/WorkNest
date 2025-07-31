@@ -635,7 +635,7 @@ include_once '../../templates/header.php';
                         </div>
                         <div class="form-group">
                             <label for="report_file">Đính kèm tệp (nếu có)</label>
-                            <input type="file" class="form-control-file" id="report_file" name="report_file">
+                            <input type="file" class="form-control-file w-100" id="report_file" name="report_file">
                             <small class="form-text text-muted">Định dạng hỗ trợ: PDF, Word, Excel, Zip (tối đa 10MB)</small>
                         </div>
                         <button type="submit" name="submit_report" class="btn btn-success">Nộp báo cáo</button>

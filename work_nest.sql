@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 17, 2025 at 04:57 PM
+-- Generation Time: Jul 30, 2025 at 03:34 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -20,23 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `work_nest`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `attachments`
---
-
-CREATE TABLE `attachments` (
-  `id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `file_name` varchar(255) NOT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `file_type` varchar(100) DEFAULT NULL,
-  `file_size` int DEFAULT NULL,
-  `uploaded_by` int NOT NULL,
-  `uploaded_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -73,11 +56,10 @@ CREATE TABLE `departments` (
 --
 
 INSERT INTO `departments` (`id`, `name`, `description`, `manager_id`, `created_at`, `updated_at`) VALUES
-(1, 'Phòng Giám đốc', 'Phòng ban quản lý cấp cao', 2, '2025-05-17 19:35:00', '2025-05-17 22:52:48'),
-(2, 'Phòng Phân tích', 'Phòng ban phụ trách phân tích dự án', 3, '2025-05-17 19:35:00', '2025-05-17 23:00:29'),
-(3, 'Phòng Thiết kế', 'Phòng ban phụ trách thiết kế cho dự án', 4, '2025-05-17 19:35:00', '2025-05-17 23:00:58'),
-(4, 'Phòng Kỹ Thuật', 'Phòng ban phụ trách kỹ thuật và phát triển dự án', 5, '2025-05-17 19:35:00', '2025-05-17 23:01:41'),
-(5, 'Phòng Kiểm Thử', 'Phòng ban phụ trách kiểm thử dự án', 6, '2025-05-17 23:02:33', '2025-05-17 23:03:54');
+(1, 'Ban phân tích & thiết kế', 'Phụ trách phân tích và thiết kế cho dự án', 3, '2025-07-30 21:44:38', '2025-07-30 21:53:57'),
+(2, 'Ban kỹ thuật phần mềm', 'Phụ trách kỹ thuật, phát triển hệ thống cho dự án', 4, '2025-07-30 21:45:51', '2025-07-30 21:53:54'),
+(3, 'Ban kiểm thử', 'Phụ trách kiểm thử hệ thống và bảo trì cho dự án', 5, '2025-07-30 21:46:25', '2025-07-30 21:53:51'),
+(4, 'Ban dịch vụ & khách hàng', 'Phụ trách kết nối, trao đổi dịch vụ, chăm sóc khách hàng', 6, '2025-07-30 21:47:15', '2025-07-30 21:53:49');
 
 -- --------------------------------------------------------
 
@@ -118,11 +100,10 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`id`, `name`, `description`, `start_date`, `end_date`, `status_id`, `priority`, `manager_id`, `created_at`, `updated_at`) VALUES
-(1, 'Xây dựng website công ty', 'Xây dựng hệ thống quản lý công việc cho công ty', '2025-05-01', '2025-06-01', 2, 4, 2, '2025-05-17 23:29:11', '2025-05-17 23:56:28'),
-(2, 'Xây dựng hệ thống bán hàng', 'Xây dựng hệ thống bán hàng cho doanh nghiệp', '2025-05-05', '2025-06-05', 2, 2, 2, '2025-05-17 23:43:54', '2025-05-17 23:56:35'),
-(3, 'Xây dựng ứng dụng quản lý chi tiêu', 'Xây dựng ứng dụng quản lý chi tiêu', '2025-05-10', '2025-06-10', 2, 2, 2, '2025-05-17 23:50:29', '2025-05-17 23:53:32'),
-(4, 'Xây dựng hệ thống quản lý thư viện', 'Xây dựng hệ thống quản lý thư viện cho trường học', '2025-05-15', '2025-06-15', 2, 2, 2, '2025-05-17 23:54:32', NULL),
-(5, 'Xây dựng hệ thống quản lý đặt phòng khách sạn', 'Xây dựng hệ thống quản lý đặt phòng khách sạn', '2025-05-20', '2025-06-20', 1, 1, 2, '2025-05-17 23:55:20', '2025-05-17 23:55:34');
+(1, 'Xây dựng ứng dụng quản lý chi tiêu', 'Mô tả xây dựng ứng dụng quản lý chi tiêu', '2025-08-01', '2025-09-01', 1, 2, 2, '2025-07-30 21:50:01', '2025-07-30 21:53:21'),
+(2, 'Xây dựng hệ thống quản lý đặt tour du lịch', 'Mô tả xây dựng hệ thống quản lý đặt tour du lịch', '2025-08-05', '2025-09-05', 1, 2, 2, '2025-07-30 21:51:14', '2025-07-30 21:53:25'),
+(3, 'Xây dựng hệ thống quản lý nhân viên', 'Mô tả xây dựng hệ thống quản lý nhân viên', '2025-08-10', '2025-09-10', 1, 2, 2, '2025-07-30 21:52:01', '2025-07-30 21:53:29'),
+(4, 'Xây dựng hệ thống bán hàng', 'Mô tả xây dựng hệ thống bán hàng', '2025-08-15', '2025-09-15', 1, 2, 2, '2025-07-30 21:52:32', '2025-07-30 21:52:57');
 
 -- --------------------------------------------------------
 
@@ -134,35 +115,30 @@ CREATE TABLE `project_departments` (
   `id` int NOT NULL,
   `project_id` int NOT NULL,
   `department_id` int NOT NULL,
-  `assigned_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `note` text
+  `assigned_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `project_departments`
 --
 
-INSERT INTO `project_departments` (`id`, `project_id`, `department_id`, `assigned_at`, `note`) VALUES
-(1, 1, 2, '2025-05-17 23:53:32', NULL),
-(2, 1, 3, '2025-05-17 23:53:32', NULL),
-(3, 1, 4, '2025-05-17 23:53:32', NULL),
-(4, 1, 5, '2025-05-17 23:53:32', NULL),
-(5, 2, 2, '2025-05-17 23:54:32', NULL),
-(6, 2, 3, '2025-05-17 23:54:32', NULL),
-(7, 2, 4, '2025-05-17 23:54:32', NULL),
-(8, 2, 5, '2025-05-17 23:54:32', NULL),
-(9, 3, 2, '2025-05-17 23:55:34', NULL),
-(10, 3, 3, '2025-05-17 23:55:34', NULL),
-(11, 3, 4, '2025-05-17 23:55:34', NULL),
-(12, 3, 5, '2025-05-17 23:55:34', NULL),
-(13, 4, 2, '2025-05-17 23:56:28', NULL),
-(14, 4, 3, '2025-05-17 23:56:28', NULL),
-(15, 4, 4, '2025-05-17 23:56:28', NULL),
-(16, 4, 5, '2025-05-17 23:56:28', NULL),
-(17, 5, 2, '2025-05-17 23:56:35', NULL),
-(18, 5, 3, '2025-05-17 23:56:35', NULL),
-(19, 5, 4, '2025-05-17 23:56:36', NULL),
-(20, 5, 5, '2025-05-17 23:56:36', NULL);
+INSERT INTO `project_departments` (`id`, `project_id`, `department_id`, `assigned_at`) VALUES
+(17, 4, 4, '2025-07-30 21:52:57'),
+(18, 4, 3, '2025-07-30 21:52:57'),
+(19, 4, 2, '2025-07-30 21:52:57'),
+(20, 4, 1, '2025-07-30 21:52:57'),
+(21, 1, 4, '2025-07-30 21:53:21'),
+(22, 1, 3, '2025-07-30 21:53:21'),
+(23, 1, 2, '2025-07-30 21:53:21'),
+(24, 1, 1, '2025-07-30 21:53:21'),
+(25, 2, 4, '2025-07-30 21:53:25'),
+(26, 2, 3, '2025-07-30 21:53:25'),
+(27, 2, 2, '2025-07-30 21:53:25'),
+(28, 2, 1, '2025-07-30 21:53:25'),
+(29, 3, 4, '2025-07-30 21:53:29'),
+(30, 3, 3, '2025-07-30 21:53:29'),
+(31, 3, 2, '2025-07-30 21:53:29'),
+(32, 3, 1, '2025-07-30 21:53:29');
 
 -- --------------------------------------------------------
 
@@ -212,36 +188,6 @@ CREATE TABLE `tasks` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `task_evaluations`
---
-
-CREATE TABLE `task_evaluations` (
-  `id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `rated_by` int NOT NULL,
-  `score` tinyint NOT NULL,
-  `comment` text,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `task_comments`
---
-
-CREATE TABLE `task_comments` (
-  `id` int NOT NULL,
-  `task_id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `comment` text NOT NULL,
-  `progress_update` tinyint DEFAULT NULL,
-  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -264,32 +210,24 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `department_id`, `phone`, `avatar`, `created_at`, `updated_at`, `last_login`) VALUES
-(1, 'Admin', 'admin@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'admin', 1, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 23:15:18', '2025-05-17 22:24:36'),
-(2, 'Nguyễn Quản lý', 'manager@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'project_manager', 1, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 22:24:36', NULL),
-(3, 'Trần Trưởng phòng', 'department1@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'department_manager', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 22:24:36', NULL),
-(4, 'Hoàng Trưởng Phòng', 'department2@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'department_manager', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 22:24:36', NULL),
-(5, 'Lê Trưởng Phòng', 'department3@gmail.com', '$2y$10$Vxe9NadwDyDimuplKvgsNOxlTf6G5r8om8PbusMhwwFb7ChHTm58i', 'department_manager', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 22:24:36', NULL),
-(6, 'Vũ Trưởng Phòng', 'department4@gmail.com', '$2y$10$ymNJfynVSqwXYJ5zR2wWcOhXDiJUhwA6nHKXqN9YlnCsu3HJuaR1K', 'department_manager', 5, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-05-17 22:24:36', NULL),
-(7, 'Nguyễn Văn A', 'staff1@gmail.com', '$2y$10$cwJzjqQeCfbGfiN67CSaUOyFDXixpqKKRd3oqcDWe6xKGG39cNXyG', 'staff', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:09:57', NULL, NULL),
-(8, 'Nguyễn Văn B', 'staff2@gmail.com', '$2y$10$UiOCwY8m3ghf1x19ACLx9eoYICEuI9d/bZkw7Ju.kxS07P3Tub5x2', 'staff', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:10:27', NULL, NULL),
-(9, 'Nguyễn Văn C', 'staff3@gmail.com', '$2y$10$kiVxQ/vGdtaWwDAfQdpZg.ZHZpXZuHnh/MvnPSGQX50E0/jw4mKR6', 'staff', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:11:39', NULL, NULL),
-(10, 'Nguyễn Văn D', 'staff4@gmail.com', '$2y$10$ompjfrxeETvb9fU4oorPrOkMchRHj7wb1Svdir8Nf6dhj2Umlkbt6', 'staff', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:12:08', NULL, NULL),
-(11, 'Nguyễn Văn E', 'staff5@gmail.com', '$2y$10$Hl2ARnPj6JKfGgG.J5.sVebpB6m.zbU.U93QIULnrl2uqNNzQ1kaC', 'staff', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:12:45', NULL, NULL),
-(12, 'Nguyễn Văn G', 'staff6@gmail.com', '$2y$10$3fNzlj1XDWhLuMeQNKrgAuEIICT7eBTMgohbiBm7re8SesBctuqPC', 'staff', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:13:37', NULL, NULL),
-(13, 'Nguyễn Văn H', 'staff7@gmail.com', '$2y$10$czhaY6o.kkQbbwDj70IIIe1erXJUkBPEMu8SxXvCmiKgZXQ82z5QS', 'staff', 5, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:14:12', NULL, NULL),
-(14, 'Nguyễn Văn K', 'staff8@gmail.com', '$2y$10$JD9AnIqHoYqM/6qr4m6IzuAJl3srlg9SU0gyBiRUICobDejQBtdFK', 'staff', 5, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:14:55', NULL, NULL);
+(1, 'Admin', 'admin@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'admin', NULL, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 21:55:09', NULL),
+(2, 'Hoàng Quản lý', 'manager@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'project_manager', NULL, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 22:34:04', NULL),
+(3, 'Lê Trưởng phòng', 'department1@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'department_manager', 1, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 21:47:38', NULL),
+(4, 'Nguyễn Trưởng Phòng', 'department2@gmail.com', '$2y$10$yREdQm2QDUQIbCMuNiHI1ePbFS1hJLNSVwM4AJDf0624p..Uqgn1m', 'department_manager', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 21:47:45', NULL),
+(5, 'Trần Trưởng Phòng', 'department3@gmail.com', '$2y$10$Vxe9NadwDyDimuplKvgsNOxlTf6G5r8om8PbusMhwwFb7ChHTm58i', 'department_manager', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 21:47:51', NULL),
+(6, 'Vũ Trưởng Phòng', 'department4@gmail.com', '$2y$10$ymNJfynVSqwXYJ5zR2wWcOhXDiJUhwA6nHKXqN9YlnCsu3HJuaR1K', 'department_manager', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 19:35:00', '2025-07-30 21:47:57', NULL),
+(7, 'Nguyễn Văn A', 'staff1@gmail.com', '$2y$10$cwJzjqQeCfbGfiN67CSaUOyFDXixpqKKRd3oqcDWe6xKGG39cNXyG', 'staff', 1, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:09:57', '2025-07-30 21:48:08', NULL),
+(8, 'Nguyễn Văn B', 'staff2@gmail.com', '$2y$10$UiOCwY8m3ghf1x19ACLx9eoYICEuI9d/bZkw7Ju.kxS07P3Tub5x2', 'staff', 1, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:10:27', '2025-07-30 21:48:14', NULL),
+(9, 'Nguyễn Văn C', 'staff3@gmail.com', '$2y$10$kiVxQ/vGdtaWwDAfQdpZg.ZHZpXZuHnh/MvnPSGQX50E0/jw4mKR6', 'staff', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:11:39', '2025-07-30 21:48:21', NULL),
+(10, 'Nguyễn Văn D', 'staff4@gmail.com', '$2y$10$ompjfrxeETvb9fU4oorPrOkMchRHj7wb1Svdir8Nf6dhj2Umlkbt6', 'staff', 2, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:12:08', '2025-07-30 21:48:26', NULL),
+(11, 'Nguyễn Văn E', 'staff5@gmail.com', '$2y$10$Hl2ARnPj6JKfGgG.J5.sVebpB6m.zbU.U93QIULnrl2uqNNzQ1kaC', 'staff', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:12:45', '2025-07-30 21:48:35', NULL),
+(12, 'Nguyễn Văn G', 'staff6@gmail.com', '$2y$10$3fNzlj1XDWhLuMeQNKrgAuEIICT7eBTMgohbiBm7re8SesBctuqPC', 'staff', 3, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:13:37', '2025-07-30 21:48:44', NULL),
+(13, 'Nguyễn Văn H', 'staff7@gmail.com', '$2y$10$czhaY6o.kkQbbwDj70IIIe1erXJUkBPEMu8SxXvCmiKgZXQ82z5QS', 'staff', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:14:12', '2025-07-30 21:48:51', NULL),
+(14, 'Nguyễn Văn K', 'staff8@gmail.com', '$2y$10$JD9AnIqHoYqM/6qr4m6IzuAJl3srlg9SU0gyBiRUICobDejQBtdFK', 'staff', 4, '0123456789', 'assets/images/avatar-default.png', '2025-05-17 23:14:55', '2025-07-30 21:48:58', NULL);
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `attachments`
---
-ALTER TABLE `attachments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `task_id` (`task_id`),
-  ADD KEY `uploaded_by` (`uploaded_by`);
 
 --
 -- Indexes for table `comments`
@@ -355,23 +293,6 @@ ALTER TABLE `tasks`
   ADD KEY `parent_id` (`parent_id`);
 
 --
--- Indexes for table `task_evaluations`
---
-ALTER TABLE `task_evaluations`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `task_id_2` (`task_id`,`rated_by`),
-  ADD KEY `task_id` (`task_id`),
-  ADD KEY `rated_by` (`rated_by`);
-
---
--- Indexes for table `task_comments`
---
-ALTER TABLE `task_comments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `task_id` (`task_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -385,12 +306,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `attachments`
---
-ALTER TABLE `attachments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
@@ -400,7 +315,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `departments`
 --
 ALTER TABLE `departments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -412,13 +327,13 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `project_departments`
 --
 ALTER TABLE `project_departments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `reports`
@@ -433,33 +348,14 @@ ALTER TABLE `tasks`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `task_evaluations`
---
-ALTER TABLE `task_evaluations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `task_comments`
---
-ALTER TABLE `task_comments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `attachments`
---
-ALTER TABLE `attachments`
-  ADD CONSTRAINT `fk_attachments_task` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_attachments_user` FOREIGN KEY (`uploaded_by`) REFERENCES `users` (`id`) ON DELETE RESTRICT;
 
 --
 -- Constraints for table `comments`
@@ -511,26 +407,6 @@ ALTER TABLE `tasks`
   ADD CONSTRAINT `fk_tasks_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_tasks_parent` FOREIGN KEY (`parent_id`) REFERENCES `tasks` (`id`) ON DELETE SET NULL,
   ADD CONSTRAINT `fk_tasks_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `task_evaluations`
---
-ALTER TABLE `task_evaluations`
-  ADD CONSTRAINT `fk_evaluations_task` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_evaluations_user` FOREIGN KEY (`rated_by`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `task_comments`
---
-ALTER TABLE `task_comments`
-  ADD CONSTRAINT `fk_task_comments_task` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_task_comments_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `users`
---
-ALTER TABLE `users`
-  ADD CONSTRAINT `fk_users_department` FOREIGN KEY (`department_id`) REFERENCES `departments` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

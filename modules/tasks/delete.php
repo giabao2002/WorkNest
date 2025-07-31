@@ -67,9 +67,6 @@ if (isset($_GET['confirm']) && $_GET['confirm'] == 1) {
         query("UPDATE tasks SET parent_id = NULL, updated_at = NOW() WHERE parent_id = $task_id");
     }
     
-    // Xóa các ghi chú liên quan
-    query("DELETE FROM task_comments WHERE task_id = $task_id");
-    
     // Xóa công việc
     $delete_result = query("DELETE FROM tasks WHERE id = $task_id");
     

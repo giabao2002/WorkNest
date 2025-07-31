@@ -54,13 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = query($sql);
             
             if ($result) {
-                // Nếu có thay đổi trưởng phòng, cập nhật vai trò người dùng
-                if ($manager_id !== 'NULL' && $department['manager_id'] != $manager_id) {
-                    // Cập nhật vai trò người dùng nếu chưa phải là trưởng phòng hoặc quản lý dự án
-                    query("UPDATE users SET role = 'department_manager' 
-                           WHERE id = $manager_id AND role = 'staff'");
-                }
-                
                 set_flash_message('Cập nhật phòng ban thành công');
                 redirect('modules/departments/view.php?id=' . $department_id);
             } else {
@@ -71,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Lấy danh sách người dùng có thể làm trưởng phòng
-$user_query = query("SELECT id, name, email, role FROM users WHERE role IN ('project_manager', 'department_manager', 'staff') ORDER BY name");
+$user_query = query("SELECT id, name, email, role FROM users WHERE role IN ('project_manager', 'department_manager') ORDER BY name");
 
 // Tiêu đề trang
 $page_title = "Chỉnh sửa phòng ban: " . $department['name'];

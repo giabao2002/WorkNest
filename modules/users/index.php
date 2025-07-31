@@ -175,7 +175,7 @@ while ($department = fetch_array($departments_result)) {
                     <thead class="table-light">
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">Họ tên</th>
+                            <th scope="col">Họ và tên</th>
                             <th scope="col">Email</th>
                             <th scope="col">Vai trò</th>
                             <th scope="col">Phòng ban</th>
@@ -189,7 +189,7 @@ while ($department = fetch_array($departments_result)) {
                                 <tr>
                                     <td><?php echo $user['id']; ?></td>
                                     <td>
-                                        <div class="d-flex align-items-center justify-content-evenly">
+                                        <div class="d-flex align-items-center">
                                             <img src="<?php echo BASE_URL . $user['avatar']; ?>" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                             <?php echo $user['name']; ?>
                                         </div>
